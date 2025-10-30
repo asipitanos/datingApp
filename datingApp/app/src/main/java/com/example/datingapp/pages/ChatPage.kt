@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -36,6 +38,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,7 +55,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.datingapp.R
 import com.example.datingapp.data.Message
 import com.example.datingapp.ui.theme.LightGray
@@ -69,8 +71,7 @@ fun ChatPage(
     onBack: () -> Unit,
 ) {
     val viewModel: ChatViewModel = koinViewModel()
-
-    val messages by viewModel.messages.collectAsStateWithLifecycle()
+    val messages by viewModel.messages.collectAsState()
 
     val textState = remember { mutableStateOf("") }
     val listState = rememberLazyListState()
@@ -243,8 +244,10 @@ fun MessageInput(
         Row(
             modifier =
                 Modifier
+                    .navigationBarsPadding()
                     .fillMaxWidth()
-                    .padding(start = 8.dp, end = 8.dp, top = 12.dp, bottom = 48.dp),
+                    .imePadding()
+                    .padding(start = 8.dp, end = 8.dp, top = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             OutlinedTextField(
