@@ -46,6 +46,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -104,10 +105,17 @@ fun ChatPage(
             }
     }
 
+    var hasScrolledInitially by remember { mutableStateOf(false) }
+
     LaunchedEffect(messages.size) {
         if (messages.isNotEmpty()) {
             coroutineScope.launch {
-                listState.animateScrollToItem(messages.size - 1)
+                if (!hasScrolledInitially) {
+                    listState.scrollToItem(messages.size - 1)
+                    hasScrolledInitially = true
+                } else {
+                    listState.animateScrollToItem(messages.size - 1)
+                }
             }
         }
     }
