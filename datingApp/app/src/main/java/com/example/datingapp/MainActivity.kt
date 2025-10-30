@@ -3,15 +3,10 @@ package com.example.datingapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.ui.Modifier
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.example.datingapp.pages.ChatPage
 import com.example.datingapp.pages.LandingPage
 import com.example.datingapp.ui.theme.DatingAppTheme
@@ -21,10 +16,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             DatingAppTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
+                Surface {
                     val navController = rememberNavController()
                     NavHost(navController = navController, startDestination = "landing") {
                         composable("landing") {
@@ -32,10 +24,6 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(
                             route = "chat/{name}",
-                            arguments = listOf(navArgument("name") {
-                                type =
-                                    NavType.StringType
-                            })
                         ) { backStackEntry ->
                             val userName = backStackEntry.arguments?.getString("name") ?: "User"
                             ChatPage(

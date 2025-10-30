@@ -35,7 +35,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -53,22 +54,37 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.datingapp.R
 import com.example.datingapp.data.Message
-import com.example.datingapp.data.SampleData
 import com.example.datingapp.ui.theme.LightGray
 import com.example.datingapp.ui.theme.Pink
-import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun ChatPage(userName: String, onBack: () -> Unit) {
+fun ChatPage(
+    userName: String,
+    onBack: () -> Unit
+) {
 
-    val messages = remember { mutableStateListOf(*SampleData.messages.toTypedArray()) }
+    val viewModel: ChatViewModel = koinViewModel()
+
+    val messages by viewModel.messages.collectAsStateWithLifecycle()
 
     val textState = remember { mutableStateOf("") }
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
+
+
+    LaunchedEffect(messages.size) {
+        if (messages.isNotEmpty()) {
+            coroutineScope.launch {
+                listState.animateScrollToItem(messages.size - 1)
+            }
+        }
+    }
 
     Scaffold(
         topBar = { ChatTopBar(userName = userName, onBack = onBack) },
@@ -77,19 +93,9 @@ fun ChatPage(userName: String, onBack: () -> Unit) {
                 message = textState.value,
                 onValueChange = { textState.value = it },
                 onSend = {
-                    if (textState.value.isNotBlank()) {
-                        messages.add(
-                            Message(
-                                text = textState.value,
-                                timestamp = LocalDateTime.now(),
-                                isSentByUser = true
-                            )
-                        )
-                        textState.value = ""
-                        coroutineScope.launch {
-                            listState.animateScrollToItem(messages.size - 1)
-                        }
-                    }
+                    // Action is now delegated to the ViewModel
+                    viewModel.sendMessage(textState.value)
+                    textState.value = ""
                 }
             )
         }
