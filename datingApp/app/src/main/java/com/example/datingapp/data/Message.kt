@@ -11,7 +11,7 @@ data class Message(
 )
 
 object SampleData {
-    val contactNames = listOf("Sarah", "Jessica", "Fatima", "Naz")
+    val contactNames = listOf("Sarah")
 
     val messages = listOf(
         Message(
