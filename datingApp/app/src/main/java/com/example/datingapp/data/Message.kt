@@ -9,12 +9,12 @@ data class Message(
 )
 
 object SampleData {
-    val contactNames = listOf("Sarah")
+    val contactNames = listOf("Sarah", "Naz")
 
     val messages =
         listOf(
             Message(
-                "Wowsers sounds fun",
+                "Wow sounds fun",
                 LocalDateTime.now().minusHours(2),
                 isSentByUser = false,
             ),

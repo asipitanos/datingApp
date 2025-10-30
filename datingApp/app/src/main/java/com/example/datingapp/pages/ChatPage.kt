@@ -28,7 +28,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -161,7 +160,7 @@ fun ChatTopBar(
         title = {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Image(
-                    imageVector = Icons.Default.Person,
+                    painter = painterResource(R.drawable.ic_woman),
                     contentDescription = "$userName's profile picture",
                     modifier =
                         Modifier
