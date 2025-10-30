@@ -28,7 +28,7 @@ class MainActivity : ComponentActivity() {
                             val userName = backStackEntry.arguments?.getString("name") ?: "User"
                             ChatPage(
                                 userName = userName,
-                                onBack = { navController.popBackStack() }
+                                onBack = { navController.popBackStack() },
                             )
                         }
                     }

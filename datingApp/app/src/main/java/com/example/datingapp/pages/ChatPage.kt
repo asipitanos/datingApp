@@ -52,23 +52,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.datingapp.R
 import com.example.datingapp.data.Message
 import com.example.datingapp.ui.theme.LightGray
 import com.example.datingapp.ui.theme.Pink
+import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import kotlinx.coroutines.launch
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ChatPage(
     userName: String,
-    onBack: () -> Unit
+    onBack: () -> Unit,
 ) {
-
     val viewModel: ChatViewModel = koinViewModel()
 
     val messages by viewModel.messages.collectAsStateWithLifecycle()
@@ -76,7 +75,6 @@ fun ChatPage(
     val textState = remember { mutableStateOf("") }
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
-
 
     LaunchedEffect(messages.size) {
         if (messages.isNotEmpty()) {
@@ -96,34 +94,38 @@ fun ChatPage(
                     // Action is now delegated to the ViewModel
                     viewModel.sendMessage(textState.value)
                     textState.value = ""
-                }
+                },
             )
-        }
+        },
     ) { paddingValues ->
         MessageList(
             messages = messages,
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize(),
-            listState = listState
+            modifier =
+                Modifier
+                    .padding(paddingValues)
+                    .fillMaxSize(),
+            listState = listState,
         )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChatTopBar(userName: String, onBack: () -> Unit) {
+fun ChatTopBar(
+    userName: String,
+    onBack: () -> Unit,
+) {
     TopAppBar(
         title = {
             Row(verticalAlignment = Alignment.CenterVertically) {
-
                 Image(
                     imageVector = Icons.Default.Person,
                     contentDescription = "$userName's profile picture",
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clip(CircleShape),
-                    contentScale = ContentScale.Crop
+                    modifier =
+                        Modifier
+                            .size(32.dp)
+                            .clip(CircleShape),
+                    contentScale = ContentScale.Crop,
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(text = userName, fontWeight = FontWeight.Bold)
@@ -134,7 +136,7 @@ fun ChatTopBar(userName: String, onBack: () -> Unit) {
                 Icon(
                     painterResource(R.drawable.ic_arrow_back),
                     contentDescription = "Back",
-                    tint = Pink
+                    tint = Pink,
                 )
             }
         },
@@ -143,7 +145,7 @@ fun ChatTopBar(userName: String, onBack: () -> Unit) {
                 Icon(painterResource(R.drawable.ic_menu), contentDescription = "More options")
             }
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = White)
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = White),
     )
 }
 
@@ -151,21 +153,23 @@ fun ChatTopBar(userName: String, onBack: () -> Unit) {
 fun MessageList(
     messages: List<Message>,
     modifier: Modifier = Modifier,
-    listState: LazyListState
+    listState: LazyListState,
 ) {
     LazyColumn(
         state = listState,
         modifier = modifier.padding(horizontal = 8.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp),
-        contentPadding = PaddingValues(vertical = 8.dp)
+        contentPadding = PaddingValues(vertical = 8.dp),
     ) {
         itemsIndexed(messages) { index, message ->
             val prevMessage = messages.getOrNull(index - 1)
-            val showTimestampHeader = prevMessage == null ||
+            val showTimestampHeader =
+                prevMessage == null ||
                     ChronoUnit.HOURS.between(prevMessage.timestamp, message.timestamp) >= 1
 
             val isSameUserAsPrev = prevMessage?.isSentByUser == message.isSentByUser
-            val isWithin20Seconds = prevMessage != null &&
+            val isWithin20Seconds =
+                prevMessage != null &&
                     ChronoUnit.SECONDS.between(prevMessage.timestamp, message.timestamp) < 20
 
             val addExtraSpacing = !(isSameUserAsPrev && isWithin20Seconds)
@@ -176,7 +180,7 @@ fun MessageList(
 
             MessageBubble(
                 message = message,
-                modifier = Modifier.padding(top = if (addExtraSpacing) 8.dp else 2.dp)
+                modifier = Modifier.padding(top = if (addExtraSpacing) 8.dp else 2.dp),
             )
         }
     }
@@ -186,21 +190,24 @@ fun MessageList(
 fun TimestampHeader(timestamp: LocalDateTime) {
     val formatter = DateTimeFormatter.ofPattern("EEEE h:mm a")
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 12.dp),
-        contentAlignment = Alignment.Center
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(vertical = 12.dp),
+        contentAlignment = Alignment.Center,
     ) {
         Text(text = timestamp.format(formatter), fontSize = 12.sp, color = Gray)
     }
 }
 
 @Composable
-fun MessageBubble(message: Message, modifier: Modifier = Modifier) {
-
+fun MessageBubble(
+    message: Message,
+    modifier: Modifier = Modifier,
+) {
     Box(
         modifier = modifier.fillMaxWidth(),
-        contentAlignment = if (message.isSentByUser) Alignment.CenterEnd else Alignment.CenterStart
+        contentAlignment = if (message.isSentByUser) Alignment.CenterEnd else Alignment.CenterStart,
     ) {
         Column(
             Modifier
@@ -211,10 +218,11 @@ fun MessageBubble(message: Message, modifier: Modifier = Modifier) {
             Text(
                 text = message.text,
                 color = if (message.isSentByUser) White else Black,
-                modifier = Modifier.padding(
-                    horizontal = 16.dp,
-                    vertical = 10.dp
-                )
+                modifier =
+                    Modifier.padding(
+                        horizontal = 16.dp,
+                        vertical = 10.dp,
+                    ),
             )
         }
     }
@@ -224,14 +232,15 @@ fun MessageBubble(message: Message, modifier: Modifier = Modifier) {
 fun MessageInput(
     message: String,
     onValueChange: (String) -> Unit,
-    onSend: () -> Unit
+    onSend: () -> Unit,
 ) {
     Surface(shadowElevation = 8.dp) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 8.dp, end = 8.dp, top = 12.dp, bottom = 48.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(start = 8.dp, end = 8.dp, top = 12.dp, bottom = 48.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             OutlinedTextField(
                 value = message,
@@ -239,29 +248,30 @@ fun MessageInput(
                 modifier = Modifier.weight(1f),
                 placeholder = { Text("Hey, Sara looks great") },
                 shape = androidx.compose.foundation.shape.RoundedCornerShape(24.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Pink,
-                    unfocusedBorderColor = LightGray
-                )
+                colors =
+                    OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Pink,
+                        unfocusedBorderColor = LightGray,
+                    ),
             )
             Spacer(modifier = Modifier.width(8.dp))
             IconButton(
                 onClick = onSend,
-                modifier = Modifier
-                    .size(48.dp)
-                    .background(Pink, CircleShape)
+                modifier =
+                    Modifier
+                        .size(48.dp)
+                        .background(Pink, CircleShape),
             ) {
                 Icon(
                     Icons.AutoMirrored.Filled.Send,
                     contentDescription = "Send",
-                    tint = White
+                    tint = White,
                 )
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
     }
 }
-
 
 @Preview(showSystemUi = true)
 @Composable

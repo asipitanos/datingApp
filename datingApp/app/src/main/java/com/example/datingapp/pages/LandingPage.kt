@@ -28,7 +28,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.datingapp.data.SampleData
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LandingPage(navController: NavController) {
@@ -36,14 +35,15 @@ fun LandingPage(navController: NavController) {
         topBar = {
             TopAppBar(
                 title = { Text("Chats") },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White),
             )
-        }
+        },
     ) { paddingValues ->
         LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
         ) {
             items(SampleData.contactNames) { name ->
                 ContactRow(name = name) {
@@ -56,13 +56,17 @@ fun LandingPage(navController: NavController) {
 }
 
 @Composable
-fun ContactRow(name: String, onClick: () -> Unit) {
+fun ContactRow(
+    name: String,
+    onClick: () -> Unit,
+) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clickable(onClick = onClick)
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Spacer(modifier = Modifier.width(16.dp))
         Text(text = name, fontSize = 18.sp, fontWeight = FontWeight.Medium)
@@ -73,6 +77,6 @@ fun ContactRow(name: String, onClick: () -> Unit) {
 @Composable
 fun LandingPagePreview() {
     LandingPage(
-        navController = rememberNavController()
+        navController = rememberNavController(),
     )
 }
