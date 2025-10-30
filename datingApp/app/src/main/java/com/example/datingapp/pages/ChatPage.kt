@@ -2,15 +2,18 @@ package com.example.datingapp.pages
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -43,6 +46,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,6 +54,7 @@ import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Gray
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -59,6 +64,8 @@ import com.example.datingapp.R
 import com.example.datingapp.data.Message
 import com.example.datingapp.ui.theme.LightGray
 import com.example.datingapp.ui.theme.Pink
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDateTime
@@ -76,6 +83,26 @@ fun ChatPage(
     val textState = remember { mutableStateOf("") }
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
+
+    val density = LocalDensity.current
+
+    val imeInsets = WindowInsets.ime
+
+    LaunchedEffect(imeInsets) {
+        var lastImeBottom = 0
+        snapshotFlow { imeInsets.getBottom(density) }
+            .distinctUntilChanged()
+            .collectLatest { imeBottom ->
+                val delta = imeBottom - lastImeBottom
+                lastImeBottom = imeBottom
+
+                if (messages.isNotEmpty() && delta != 0) {
+                    coroutineScope.launch {
+                        listState.scrollBy(delta.toFloat())
+                    }
+                }
+            }
+    }
 
     LaunchedEffect(messages.size) {
         if (messages.isNotEmpty()) {
