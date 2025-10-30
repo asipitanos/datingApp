@@ -85,13 +85,17 @@ fun ChatPage(
     }
 
     Scaffold(
-        topBar = { ChatTopBar(userName = userName, onBack = onBack) },
+        topBar = {
+            ChatTopBar(userName = userName, onBack = onBack, onSend = {
+                viewModel.sendMessage(textState.value, isSentByUser = false)
+                textState.value = ""
+            })
+        },
         bottomBar = {
             MessageInput(
                 message = textState.value,
                 onValueChange = { textState.value = it },
                 onSend = {
-                    // Action is now delegated to the ViewModel
                     viewModel.sendMessage(textState.value)
                     textState.value = ""
                 },
@@ -114,6 +118,7 @@ fun ChatPage(
 fun ChatTopBar(
     userName: String,
     onBack: () -> Unit,
+    onSend: () -> Unit,
 ) {
     TopAppBar(
         title = {
@@ -141,7 +146,7 @@ fun ChatTopBar(
             }
         },
         actions = {
-            IconButton(onClick = { }) {
+            IconButton(onClick = onSend) {
                 Icon(painterResource(R.drawable.ic_menu), contentDescription = "More options")
             }
         },

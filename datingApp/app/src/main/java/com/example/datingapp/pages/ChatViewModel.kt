@@ -19,13 +19,16 @@ class ChatViewModel(private val repository: MessageRepository) : ViewModel() {
                 initialValue = emptyList(),
             )
 
-    fun sendMessage(text: String) {
+    fun sendMessage(
+        text: String,
+        isSentByUser: Boolean = true,
+    ) {
         if (text.isNotBlank()) {
             val message =
                 Message(
                     text = text,
                     timestamp = LocalDateTime.now(),
-                    isSentByUser = true,
+                    isSentByUser = isSentByUser,
                 )
             viewModelScope.launch {
                 repository.insert(message)
