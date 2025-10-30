@@ -63,6 +63,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.datingapp.R
 import com.example.datingapp.data.Message
+import com.example.datingapp.ui.theme.LightBlue
 import com.example.datingapp.ui.theme.LightGray
 import com.example.datingapp.ui.theme.Pink
 import kotlinx.coroutines.flow.collectLatest
@@ -250,10 +251,26 @@ fun MessageBubble(
         modifier = modifier.fillMaxWidth(),
         contentAlignment = if (message.isSentByUser) Alignment.CenterEnd else Alignment.CenterStart,
     ) {
+        val shape =
+            if (message.isSentByUser) {
+                RoundedCornerShape(
+                    topStart = 18.dp,
+                    topEnd = 18.dp,
+                    bottomStart = 18.dp,
+                    bottomEnd = 0.dp,
+                )
+            } else {
+                RoundedCornerShape(
+                    topStart = 18.dp,
+                    topEnd = 18.dp,
+                    bottomEnd = 18.dp,
+                    bottomStart = 0.dp,
+                )
+            }
         Column(
             Modifier
-                .clip(RoundedCornerShape(16.dp))
-                .background(if (message.isSentByUser) Pink else LightGray)
+                .clip(shape)
+                .background(if (message.isSentByUser) Pink else LightBlue)
                 .widthIn(max = 280.dp),
         ) {
             Text(
