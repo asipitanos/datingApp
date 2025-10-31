@@ -1,4 +1,4 @@
-package com.example.datingapp.data
+package com.example.data
 
 import android.content.Context
 import androidx.room.Database

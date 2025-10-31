@@ -2,8 +2,8 @@ package com.example.datingapp.pages
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datingapp.data.Message
-import com.example.datingapp.data.MessageRepository
+import com.example.data.Message
+import com.example.data.MessageRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

@@ -1,4 +1,4 @@
-package com.example.datingapp.data
+package com.example.data
 
 import java.time.LocalDateTime
 

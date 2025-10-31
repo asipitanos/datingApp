@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "datingApp"
 include(":app")
- 
+include(":data")

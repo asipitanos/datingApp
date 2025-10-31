@@ -31,8 +31,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.data.SampleData
 import com.example.datingapp.R
-import com.example.datingapp.data.SampleData
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

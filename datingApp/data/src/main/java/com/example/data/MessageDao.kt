@@ -1,4 +1,4 @@
-package com.example.datingapp.data
+package com.example.data
 
 import androidx.room.Dao
 import androidx.room.Insert

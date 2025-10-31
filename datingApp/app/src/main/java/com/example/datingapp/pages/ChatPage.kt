@@ -63,8 +63,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.data.Message
 import com.example.datingapp.R
-import com.example.datingapp.data.Message
 import com.example.datingapp.ui.theme.LightBlue
 import com.example.datingapp.ui.theme.LightGray
 import com.example.datingapp.ui.theme.Pink

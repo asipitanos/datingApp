@@ -1,8 +1,9 @@
-package com.example.datingapp.data
+package com.example.data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 @Entity(tableName = "messages")
 data class MessageEntity(
@@ -16,7 +17,7 @@ data class MessageEntity(
 fun MessageEntity.toMessage(): Message {
     return Message(
         text = this.text,
-        timestamp = LocalDateTime.ofEpochSecond(this.timestamp, 0, java.time.ZoneOffset.UTC),
+        timestamp = LocalDateTime.ofEpochSecond(this.timestamp, 0, ZoneOffset.UTC),
         isSentByUser = this.isSentByUser,
     )
 }
@@ -24,7 +25,7 @@ fun MessageEntity.toMessage(): Message {
 fun Message.toEntity(): MessageEntity {
     return MessageEntity(
         text = this.text,
-        timestamp = this.timestamp.toEpochSecond(java.time.ZoneOffset.UTC),
+        timestamp = this.timestamp.toEpochSecond(ZoneOffset.UTC),
         isSentByUser = this.isSentByUser,
     )
 }
