@@ -49,6 +49,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Gray
@@ -127,8 +128,10 @@ fun ChatPage(
     Scaffold(
         topBar = {
             ChatTopBar(userName = userName, onBack = onBack, onSend = {
-                viewModel.sendMessage(textState.value, isSentByUser = false)
-                textState.value = ""
+                if (textState.value.isNotBlank()) {
+                    viewModel.sendMessage(textState.value, isSentByUser = false)
+                    textState.value = ""
+                }
             })
         },
         bottomBar = {
@@ -346,9 +349,11 @@ fun MessageInput(
             Spacer(modifier = Modifier.width(8.dp))
             IconButton(
                 onClick = onSend,
+                enabled = message.isNotBlank(),
                 modifier =
                     Modifier
                         .size(48.dp)
+                        .alpha(if (message.isNotBlank()) 1f else 0.5f)
                         .background(Pink, CircleShape),
             ) {
                 Icon(

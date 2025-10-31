@@ -81,6 +81,7 @@ dependencies {
     testImplementation(kotlin("test"))
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
+    implementation(libs.androidx.compose.animation)
 }
 
 ktlint {
