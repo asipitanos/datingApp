@@ -14,8 +14,13 @@ object SampleData {
     val messages =
         listOf(
             Message(
+                "Would you like to go to the cinema today?",
+                LocalDateTime.now().minusHours(4),
+                isSentByUser = true,
+            ),
+            Message(
                 "Wow sounds fun",
-                LocalDateTime.now().minusHours(2),
+                LocalDateTime.now().minusHours(1).minusMinutes(3),
                 isSentByUser = false,
             ),
             Message(

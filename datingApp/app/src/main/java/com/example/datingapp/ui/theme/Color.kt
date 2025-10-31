@@ -14,3 +14,5 @@ val Pink = Color(0xFFE91E63)
 val LightGray = Color(0xFFF0F0F0)
 
 val LightBlue = Color(0xFFEBF1FC)
+
+val ReadMessageYellow = Color(0xFFFADB50)

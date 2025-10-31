@@ -56,7 +56,10 @@ import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -65,6 +68,7 @@ import com.example.datingapp.data.Message
 import com.example.datingapp.ui.theme.LightBlue
 import com.example.datingapp.ui.theme.LightGray
 import com.example.datingapp.ui.theme.Pink
+import com.example.datingapp.ui.theme.ReadMessageYellow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
@@ -229,7 +233,17 @@ fun MessageList(
 
 @Composable
 fun TimestampHeader(timestamp: LocalDateTime) {
-    val formatter = DateTimeFormatter.ofPattern("EEEE h:mm a")
+    val formatterDay = DateTimeFormatter.ofPattern("EEEE")
+    val formatterTime = DateTimeFormatter.ofPattern(" h:mm a")
+
+    val annotatedString =
+        buildAnnotatedString {
+            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                append(timestamp.format(formatterDay))
+            }
+            append(timestamp.format(formatterTime))
+        }
+
     Box(
         modifier =
             Modifier
@@ -237,7 +251,7 @@ fun TimestampHeader(timestamp: LocalDateTime) {
                 .padding(vertical = 12.dp),
         contentAlignment = Alignment.Center,
     ) {
-        Text(text = timestamp.format(formatter), fontSize = 12.sp, color = Gray)
+        Text(text = annotatedString, fontSize = 12.sp, color = Gray)
     }
 }
 
@@ -277,10 +291,24 @@ fun MessageBubble(
                 color = if (message.isSentByUser) White else Black,
                 modifier =
                     Modifier.padding(
-                        horizontal = 16.dp,
-                        vertical = 10.dp,
+                        start = 16.dp,
+                        end = 16.dp,
+                        top = 10.dp,
+                        bottom = if (message.isSentByUser) 0.dp else 10.dp,
                     ),
             )
+            if (message.isSentByUser) {
+                Icon(
+                    painterResource(R.drawable.ic_double_tick),
+                    "conte",
+                    modifier =
+                        Modifier
+                            .align(Alignment.End)
+                            .padding(end = 4.dp, bottom = 4.dp)
+                            .width(14.dp),
+                    tint = ReadMessageYellow,
+                )
+            }
         }
     }
 }
@@ -332,8 +360,25 @@ fun MessageInput(
     }
 }
 
-@Preview(showSystemUi = true)
+@Preview(showBackground = true)
 @Composable
-fun ChatPagePreview() {
-    ChatPage(userName = "Sarah", onBack = {})
+fun MessageBubblePreview() {
+    Column {
+        MessageBubble(
+            message =
+                Message(
+                    text = "Hello, how are you?",
+                    isSentByUser = true,
+                    timestamp = LocalDateTime.now(),
+                ),
+        )
+        MessageBubble(
+            message =
+                Message(
+                    text = "Hello, how are you?",
+                    isSentByUser = false,
+                    timestamp = LocalDateTime.now(),
+                ),
+        )
+    }
 }
