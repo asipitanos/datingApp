@@ -78,6 +78,9 @@ dependencies {
     implementation(libs.koin.core)
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.compose)
+    testImplementation(kotlin("test"))
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
 }
 
 ktlint {
