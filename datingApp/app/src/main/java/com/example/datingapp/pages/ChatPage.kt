@@ -83,7 +83,7 @@ fun ChatPage(
     onBack: () -> Unit,
 ) {
     val viewModel: ChatViewModel = koinViewModel()
-    val messages by viewModel.messages.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
     val textState = remember { mutableStateOf("") }
     val listState = rememberLazyListState()
@@ -101,7 +101,7 @@ fun ChatPage(
                 val delta = imeBottom - lastImeBottom
                 lastImeBottom = imeBottom
 
-                if (messages.isNotEmpty() && delta != 0) {
+                if (uiState.messages.isNotEmpty() && delta != 0) {
                     coroutineScope.launch {
                         listState.scrollBy(delta.toFloat())
                     }
@@ -111,14 +111,14 @@ fun ChatPage(
 
     var hasScrolledInitially by remember { mutableStateOf(false) }
 
-    LaunchedEffect(messages.size) {
-        if (messages.isNotEmpty()) {
+    LaunchedEffect(uiState.messages.size) {
+        if (uiState.messages.isNotEmpty()) {
             coroutineScope.launch {
                 if (!hasScrolledInitially) {
-                    listState.scrollToItem(messages.size - 1)
+                    listState.scrollToItem(uiState.messages.size - 1)
                     hasScrolledInitially = true
                 } else {
-                    listState.animateScrollToItem(messages.size - 1)
+                    listState.animateScrollToItem(uiState.messages.size - 1)
                 }
             }
         }
@@ -142,8 +142,10 @@ fun ChatPage(
             )
         },
     ) { paddingValues ->
-        MessageList(
-            messages = messages,
+        uiState.error?.let {
+            Text(it)
+        } ?: MessageList(
+            messages = uiState.messages,
             modifier =
                 Modifier
                     .padding(paddingValues)
